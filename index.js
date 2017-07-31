@@ -15,7 +15,7 @@ var defaultOptions = {
 
 // For ember-cli < 2.7 findHost doesnt exist so we backport from that version
 // for earlier version of ember-cli.
-//https://github.com/ember-cli/ember-cli/blame/16e4492c9ebf3348eb0f31df17215810674dbdf6/lib/models/addon.js#L533
+// https://github.com/ember-cli/ember-cli/blame/16e4492c9ebf3348eb0f31df17215810674dbdf6/lib/models/addon.js#L533
 function findHostShim() {
   let current = this;
   let app;
@@ -28,7 +28,7 @@ function findHostShim() {
 module.exports = {
   name: 'ember-bootstrap',
 
-  included: function included(appOrAddon) {
+  included: function included() {
     let findHost = this._findHost || findHostShim;
     let app = findHost.call(this);
 
