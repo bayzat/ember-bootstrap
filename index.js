@@ -1,17 +1,23 @@
 /* jshint node: true */
 'use strict';
 
-var path = require('path'),
-  util = require('util'),
-  extend = util._extend,
-  mergeTrees = require('broccoli-merge-trees'),
-  Funnel = require('broccoli-funnel');
+const path = require('path');
+const util = require('util');
+const extend = util._extend;
+const mergeTrees = require('broccoli-merge-trees');
+const Funnel = require('broccoli-funnel');
+const chalk = require('chalk');
 
-var defaultOptions = {
+const defaultOptions = {
   importBootstrapTheme: false,
-  importBootstrapCSS: true,
-  importBootstrapFont: true
+  importBootstrapCSS: false,
+  importBootstrapFont: false
 };
+
+const supportedPreprocessors = [
+  'less',
+  'sass'
+];
 
 // For ember-cli < 2.7 findHost doesnt exist so we backport from that version
 // for earlier version of ember-cli.
@@ -28,33 +34,34 @@ function findHostShim() {
 module.exports = {
   name: 'ember-bootstrap',
 
-  included: function included() {
+  included() {
+    this._super.included.apply(this, arguments);
+
     let findHost = this._findHost || findHostShim;
     let app = findHost.call(this);
 
     this.app = app;
 
-    var options = extend(defaultOptions, app.options['ember-bootstrap']);
-    var bootstrapPath = path.join(app.bowerDirectory, 'bootstrap/dist');
+    let options = extend(extend({}, defaultOptions), app.options['ember-bootstrap']);
+    this.bootstrapOptions = options;
 
-    // Import css from bootstrap
-    if (options.importBootstrapCSS) {
-      app.import(path.join(bootstrapPath, 'css/bootstrap.css'));
-      app.import(path.join(bootstrapPath, 'css/bootstrap.css.map'), {destDir: 'assets'});
-    }
+    this.validateDependencies();
+    this.preprocessor = this.findPreprocessor();
 
-    if (options.importBootstrapTheme) {
-      app.import(path.join(bootstrapPath, 'css/bootstrap-theme.css'));
-      app.import(path.join(bootstrapPath, 'css/bootstrap-theme.css.map'), {destDir: 'assets'});
-    }
+    // static Bootstrap CSS is mapped to vendor tree so import from there
+    let vendorPath = path.join('vendor', 'ember-bootstrap');
 
-    // Import glyphicons
-    if (options.importBootstrapFont) {
-      app.import(path.join(bootstrapPath, 'fonts/glyphicons-halflings-regular.eot'), {destDir: '/fonts'});
-      app.import(path.join(bootstrapPath, 'fonts/glyphicons-halflings-regular.svg'), {destDir: '/fonts'});
-      app.import(path.join(bootstrapPath, 'fonts/glyphicons-halflings-regular.ttf'), {destDir: '/fonts'});
-      app.import(path.join(bootstrapPath, 'fonts/glyphicons-halflings-regular.woff'), {destDir: '/fonts'});
-      app.import(path.join(bootstrapPath, 'fonts/glyphicons-halflings-regular.woff2'), {destDir: '/fonts'});
+    if (!this.hasPreprocessor()) {
+      // Import css from bootstrap
+      if (options.importBootstrapCSS) {
+        app.import(path.join(vendorPath, 'css/bootstrap.css'));
+        app.import(path.join(vendorPath, 'css/bootstrap.css.map'), {destDir: 'assets'});
+      }
+
+      if (options.importBootstrapTheme) {
+        app.import(path.join(vendorPath, 'css/bootstrap-theme.css'));
+        app.import(path.join(vendorPath, 'css/bootstrap-theme.css.map'), {destDir: 'assets'});
+      }
     }
 
     if (!process.env.EMBER_CLI_FASTBOOT) {
@@ -62,20 +69,90 @@ module.exports = {
     }
   },
 
-  treeForStyles: function treeForStyles(tree) {
-    var styleTrees = [];
+  validateDependencies() {
+    let bowerDependencies = this.app.project.bowerDependencies();
 
-    if (this.app.project.findAddonByName('ember-cli-less')) {
-      var lessTree = new Funnel(path.join(this.app.bowerDirectory, 'bootstrap/less'), {
+    if ('bootstrap' in bowerDependencies || 'bootstrap-sass' in bowerDependencies) {
+      this.warn('The dependencies for ember-bootstrap may be outdated. Please run `ember generate ember-bootstrap` to install appropriate dependencies!');
+    }
+  },
+
+  findPreprocessor() {
+    return supportedPreprocessors.find((name) => !!this.app.project.findAddonByName(`ember-cli-${name}`) && this.validatePreprocessor(name));
+  },
+
+  validatePreprocessor(name) {
+    let dependencies = this.app.project.dependencies();
+    switch (name) {
+      case 'sass':
+        if (!('bootstrap-sass' in dependencies)) {
+          this.warn('Npm package "bootstrap-sass" is missing, but is typically required for SASS support. Please run `ember generate ember-bootstrap` to install the missing dependencies!');
+        }
+        break;
+      case 'less':
+        if (!('bootstrap' in dependencies)) {
+          this.warn('Npm package "bootstrap" is missing, but is typically required for Less support. Please run `ember generate ember-bootstrap` to install the missing dependencies!');
+        }
+        break;
+    }
+    return true;
+  },
+
+  getBootstrapStylesPath() {
+    let nodeModulesPath = this.app.project.nodeModulesPath;
+    switch (this.preprocessor) {
+      case 'sass':
+        return path.join(nodeModulesPath, 'bootstrap-sass', 'assets', 'stylesheets');
+      case 'less':
+        return path.join(nodeModulesPath, 'bootstrap', 'less');
+      default:
+        return path.join(nodeModulesPath, 'bootstrap', 'dist', 'css');
+    }
+  },
+
+  getBootstrapFontPath() {
+    switch (this.preprocessor) {
+      case 'sass':
+        return path.join(this.app.project.nodeModulesPath, 'bootstrap-sass', 'assets', 'fonts');
+      case 'less':
+      default:
+        return path.join(this.app.project.nodeModulesPath, 'bootstrap', 'fonts');
+    }
+  },
+
+  hasPreprocessor() {
+    return !!this.preprocessor;
+  },
+
+  treeForStyles() {
+    if (this.hasPreprocessor()) {
+      return new Funnel(this.getBootstrapStylesPath(), {
         destDir: 'ember-bootstrap'
       });
-      styleTrees.push(lessTree);
     }
+  },
 
-    if (tree) {
-      styleTrees.push(tree);
+  treeForPublic() {
+    if (this.bootstrapOptions.importBootstrapFont) {
+      return new Funnel(this.getBootstrapFontPath(), {
+        destDir: 'fonts'
+      });
     }
+  },
 
-    return mergeTrees(styleTrees, { overwrite: true });
+  treeForVendor(tree) {
+    let trees = [tree];
+
+    if (!this.hasPreprocessor()) {
+      trees.push(new Funnel(this.getBootstrapStylesPath(), {
+        destDir: 'ember-bootstrap'
+      }));
+    }
+    return mergeTrees(trees, { overwrite: true });
+  },
+
+  warn(message) {
+    this.ui.writeLine(chalk.yellow(message));
   }
+
 };
