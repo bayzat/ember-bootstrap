@@ -600,7 +600,7 @@ export default FormGroup.extend(ComponentChild, {
    * @method setupValidations
    * @protected
    */
-  setupValidations: Ember.K,
+  setupValidations: function() { return this },
 
   /**
    * Listen for focusOut events from the control element to automatically set `showValidation` to true to enable
