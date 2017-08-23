@@ -10,7 +10,6 @@ const {
   guidFor,
   isArray,
   isBlank,
-  K,
   observer,
   run,
   $,
@@ -23,6 +22,7 @@ const {
   }
 } = Ember;
 const eventNamespace = 'bs-contextual-help';
+const noop = function() { return this };
 
 const InState = Ember.Object.extend({
   hover: false,
@@ -348,7 +348,7 @@ export default Component.extend({
    * @event onShow
    * @public
    */
-  onShow: K,
+  onShow: noop,
 
   /**
    * This action will be called when the tooltip/popover has been made visible to the user (will wait for CSS transitions to complete).
@@ -356,7 +356,7 @@ export default Component.extend({
    * @event onShown
    * @public
    */
-  onShown: K,
+  onShown: noop,
 
   /**
    * This action is called immediately when the tooltip/popover is about to be hidden.
@@ -364,7 +364,7 @@ export default Component.extend({
    * @event onHide
    * @public
    */
-  onHide: K,
+  onHide: noop,
 
   /**
    * This action is called when the tooltip/popover has finished being hidden from the user (will wait for CSS transitions to complete).
@@ -372,7 +372,7 @@ export default Component.extend({
    * @event onHidden
    * @public
    */
-  onHidden: K,
+  onHidden: noop,
 
   /**
    * Called when a show event has been received
