@@ -733,7 +733,7 @@ export default Component.extend({
     }
   },
 
-  willRemoveElement() {
+  willDestroyElement() {
     this._super(...arguments);
     this.removeListeners();
   },
