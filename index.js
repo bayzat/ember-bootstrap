@@ -7,6 +7,7 @@ const extend = util._extend;
 const mergeTrees = require('broccoli-merge-trees');
 const Funnel = require('broccoli-funnel');
 const chalk = require('chalk');
+const resolve = require('resolve');
 
 const defaultOptions = {
   importBootstrapTheme: false,
@@ -29,6 +30,11 @@ function findHostShim() {
     app = current.app || app;
   } while (current.parent.parent && (current = current.parent));
   return app;
+}
+
+function findModulePath(moduleName) {
+  let result = resolve.sync(moduleName, { basedir: this.app.project.root });
+  return result.substring(0, result.lastIndexOf('/node_modules/')) + `/node_modules/${moduleName}`;
 }
 
 module.exports = {
@@ -99,24 +105,23 @@ module.exports = {
   },
 
   getBootstrapStylesPath() {
-    let nodeModulesPath = this.app.project.nodeModulesPath;
     switch (this.preprocessor) {
       case 'sass':
-        return path.join(nodeModulesPath, 'bootstrap-sass', 'assets', 'stylesheets');
+        return path.join(findModulePath.call(this, 'bootstrap-sass'), 'assets', 'stylesheets');
       case 'less':
-        return path.join(nodeModulesPath, 'bootstrap', 'less');
+        return path.join(findModulePath.call(this, 'bootstrap'), 'less');
       default:
-        return path.join(nodeModulesPath, 'bootstrap', 'dist', 'css');
+        return path.join(findModulePath.call(this, 'bootstrap'), 'dist', 'css');
     }
   },
 
   getBootstrapFontPath() {
     switch (this.preprocessor) {
       case 'sass':
-        return path.join(this.app.project.nodeModulesPath, 'bootstrap-sass', 'assets', 'fonts');
+        return path.join(findModulePath.call(this, 'bootstrap-sass'), 'assets', 'fonts');
       case 'less':
       default:
-        return path.join(this.app.project.nodeModulesPath, 'bootstrap', 'fonts');
+        return path.join(findModulePath.call(this, 'bootstrap'), 'fonts');
     }
   },
 
