@@ -19,7 +19,7 @@ export default BsButtonComponent.extend({
 
   classNames: ['navbar-toggle', 'collapsed'],
 
-  targetObject: Ember.computed(function() {
+  target: Ember.computed(function() {
     return this.nearestOfType(NavbarComponent);
   }).volatile(),
 
