@@ -7,5 +7,5 @@ import Ember from 'ember';
  * @private
  */
 export default Ember.Mixin.create({
-  targetObject: Ember.computed.alias('parentView')
+  target: Ember.computed.alias('parentView')
 });

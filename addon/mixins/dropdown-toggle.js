@@ -19,7 +19,7 @@ export default Ember.Mixin.create(componentChild, {
    */
   ariaRole: 'button',
 
-  targetObject: Ember.computed.alias('parentView'),
+  target: Ember.computed.alias('parentView'),
 
   /**
    * The default action is set to "toggleDropdown" on the parent {{#crossLink "Components.Dropdown"}}{{/crossLink}}

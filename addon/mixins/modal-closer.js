@@ -7,7 +7,7 @@ import ModalComponent from '../components/bs-modal';
  * @private
  */
 export default Ember.Mixin.create({
-  targetObject: Ember.computed(function() {
+  target: Ember.computed(function() {
     return this.nearestOfType(ModalComponent);
   }).volatile(),
 
