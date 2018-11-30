@@ -65,7 +65,7 @@
     "broccoli-funnel": "^1.0.1",
     "broccoli-merge-trees": "^1.1.1",
     "ember-cli-babel": "^5.1.6",
-    "ember-cli-build-config-editor": "synaptiko/ember-cli-build-config-editor.git#v0.5.1-bayzat",
+    "ember-cli-build-config-editor": "^0.5.1",
     "ember-cli-htmlbars": "^1.1.0",
     "ember-runtime-enumerable-includes-polyfill": "^1.0.1",
     "ember-wormhole": "^0.5.2"
