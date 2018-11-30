@@ -1,7 +1,7 @@
 /*globals alert */
-import Ember from 'ember';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   modal1: false,
   modal2: false,
   modal3: true,

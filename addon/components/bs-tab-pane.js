@@ -1,9 +1,11 @@
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+import { bind, scheduleOnce } from '@ember/runloop';
+import $ from 'jquery';
+import Component from '@ember/component';
+import { observer, computed } from '@ember/object';
 import layout from '../templates/components/bs-tab-pane';
 import ComponentChild from 'ember-bootstrap/mixins/component-child';
 import Tab from './bs-tab';
-
-const { computed, observer } = Ember;
 
 /**
  The tab pane of a tab component.
@@ -15,7 +17,7 @@ const { computed, observer } = Ember;
  @uses Mixins.ComponentChild
  @public
  */
-export default Ember.Component.extend(ComponentChild, {
+export default Component.extend(ComponentChild, {
   layout,
   classNameBindings: ['active', 'fade', 'in'],
   classNames: ['tab-pane'],
@@ -61,7 +63,7 @@ export default Ember.Component.extend(ComponentChild, {
    * @protected
    */
   usesTransition: computed('fade', function() {
-    return Ember.$.support.transition && this.get('fade');
+    return $.support.transition && this.get('fade');
   }),
 
   /**
@@ -107,7 +109,7 @@ export default Ember.Component.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  fade: computed.readOnly('tab.fade'),
+  fade: readOnly('tab.fade'),
 
   /**
    * The duration of the fade out animation
@@ -117,7 +119,7 @@ export default Ember.Component.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  fadeDuration: computed.readOnly('tab.fadeDuration'),
+  fadeDuration: readOnly('tab.fadeDuration'),
 
   /**
    * Show the pane
@@ -128,7 +130,7 @@ export default Ember.Component.extend(ComponentChild, {
   show() {
     if (this.get('usesTransition')) {
       this.$()
-        .one('bsTransitionEnd', Ember.run.bind(this, function() {
+        .one('bsTransitionEnd', bind(this, function() {
           if (!this.get('isDestroyed')) {
             this.setProperties({
               active: true,
@@ -151,7 +153,7 @@ export default Ember.Component.extend(ComponentChild, {
   hide() {
     if (this.get('usesTransition')) {
       this.$()
-        .one('bsTransitionEnd', Ember.run.bind(this, function() {
+        .one('bsTransitionEnd', bind(this, function() {
           if (!this.get('isDestroyed')) {
             this.set('active', false);
           }
@@ -173,7 +175,7 @@ export default Ember.Component.extend(ComponentChild, {
 
   init() {
     this._super(...arguments);
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       // isActive comes from parent component, so only available after render...
       this.set('active', this.get('isActive'));
       this.set('in', this.get('isActive') && this.get('fade'));

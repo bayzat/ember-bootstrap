@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
+import { get } from '@ember/object';
 
 export function readPath(params/*, hash*/) {
-  return Ember.get(params[0], params[1]);
+  return get(params[0], params[1]);
 }
 
-export default Ember.Helper.helper(readPath);
+export default buildHelper(readPath);

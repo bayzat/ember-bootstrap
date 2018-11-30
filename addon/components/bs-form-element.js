@@ -1,11 +1,24 @@
-import Ember from 'ember';
+import {
+  reads,
+  gt,
+  notEmpty,
+  and,
+  deprecatingAlias,
+  alias,
+  equal,
+  oneWay
+} from '@ember/object/computed';
+import { isBlank } from '@ember/utils';
+import { isArray, A } from '@ember/array';
+import { observer, defineProperty, computed } from '@ember/object';
+import { on } from '@ember/object/evented';
+import { run } from '@ember/runloop';
+import { warn, assert } from '@ember/debug';
 import FormGroup from 'ember-bootstrap/components/bs-form-group';
 import Form from 'ember-bootstrap/components/bs-form';
 import ComponentChild from 'ember-bootstrap/mixins/component-child';
 
-const { computed, defineProperty, isArray, observer, on, run, warn } = Ember;
-
-const nonTextFieldControlTypes = Ember.A([
+const nonTextFieldControlTypes = A([
   'checkbox',
   'select',
   'textarea'
@@ -246,7 +259,7 @@ export default FormGroup.extend(ComponentChild, {
    * @type array
    * @public
    */
-  choices: Ember.A(),
+  choices: A(),
 
   /**
    * The property of the `choices` array of objects, containing the value of the choice, e.g. the select box option.
@@ -291,7 +304,7 @@ export default FormGroup.extend(ComponentChild, {
    * @property model
    * @public
    */
-  model: computed.reads('form.model'),
+  model: reads('form.model'),
 
   /**
    * The array of error messages from the `model`'s validation.
@@ -308,7 +321,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  hasErrors: computed.gt('errors.length', 0),
+  hasErrors: gt('errors.length', 0),
 
   /**
    * The array of warning messages from the `model`'s validation.
@@ -325,7 +338,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  hasWarnings: computed.gt('warnings.length', 0),
+  hasWarnings: gt('warnings.length', 0),
 
   /**
    * The array of validation messages (either errors or warnings) rom the `model`'s validation.
@@ -350,7 +363,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  hasValidationMessages: computed.gt('validationMessages.length', 0),
+  hasValidationMessages: gt('validationMessages.length', 0),
 
   /**
    * @property hasValidator
@@ -358,7 +371,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  hasValidator: computed.notEmpty('model.validate'),
+  hasValidator: notEmpty('model.validate'),
 
   /**
    * Set a validating state for async validations
@@ -386,7 +399,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  showValidationMessages: computed.and('showValidation', 'hasValidationMessages'),
+  showValidationMessages: and('showValidation', 'hasValidationMessages'),
 
   /**
    * Event or list of events which enable form validation markup rendering.
@@ -437,7 +450,7 @@ export default FormGroup.extend(ComponentChild, {
    * @deprecated
    * @protected
    */
-  showErrors: computed.deprecatingAlias('showValidationMessages'),
+  showErrors: deprecatingAlias('showValidationMessages'),
 
   /**
    * The validation ("error" or "success") or null if no validation is to be shown. Automatically computed from the
@@ -461,7 +474,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  hasLabel: computed.notEmpty('label'),
+  hasLabel: notEmpty('label'),
 
   /**
    * True for text field `controlType`s
@@ -488,7 +501,7 @@ export default FormGroup.extend(ComponentChild, {
    * @type string
    * @public
    */
-  formLayout: computed.alias('form.formLayout'),
+  formLayout: alias('form.formLayout'),
 
   /**
    * @property isVertical
@@ -496,7 +509,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  isVertical: computed.equal('formLayout', 'vertical'),
+  isVertical: equal('formLayout', 'vertical'),
 
   /**
    * @property isHorizontal
@@ -504,7 +517,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  isHorizontal: computed.equal('formLayout', 'horizontal'),
+  isHorizontal: equal('formLayout', 'horizontal'),
 
   /**
    * @property isInline
@@ -512,7 +525,7 @@ export default FormGroup.extend(ComponentChild, {
    * @readonly
    * @protected
    */
-  isInline: computed.equal('formLayout', 'inline'),
+  isInline: equal('formLayout', 'inline'),
 
   /**
    * The Bootstrap grid class for form labels within a horizontal layout form. Defaults to the value of the same
@@ -523,7 +536,7 @@ export default FormGroup.extend(ComponentChild, {
    * @default 'col-md-4'
    * @public
    */
-  horizontalLabelGridClass: computed.oneWay('form.horizontalLabelGridClass'),
+  horizontalLabelGridClass: oneWay('form.horizontalLabelGridClass'),
 
   /**
    * Computed property that specifies the Bootstrap grid class for form controls within a horizontal layout form.
@@ -535,7 +548,7 @@ export default FormGroup.extend(ComponentChild, {
    */
   horizontalInputGridClass: computed('horizontalLabelGridClass', function() {
     let parts = this.get('horizontalLabelGridClass').split('-');
-    Ember.assert('horizontalInputGridClass must match format bootstrap grid column class', parts.length === 3);
+    assert('horizontalInputGridClass must match format bootstrap grid column class', parts.length === 3);
     parts[2] = 12 - parts[2];
     return parts.join('-');
   }),
@@ -626,8 +639,8 @@ export default FormGroup.extend(ComponentChild, {
 
   init() {
     this._super();
-    if (!Ember.isBlank(this.get('property'))) {
-      defineProperty(this, 'value', computed.alias(`model.${this.get('property')}`));
+    if (!isBlank(this.get('property'))) {
+      defineProperty(this, 'value', alias(`model.${this.get('property')}`));
       this.setupValidations();
     }
   },
@@ -657,7 +670,7 @@ export default FormGroup.extend(ComponentChild, {
             this.$('.form-control-feedback').css('right', '');
             let feedbackIcon = this.$('.form-control-feedback', formGroups);
             let defaultPositionString = feedbackIcon.css('right');
-            Ember.assert(
+            assert(
               defaultPositionString.substr(-2) === 'px',
               '.form-control-feedback css right units other than px are not supported'
             );

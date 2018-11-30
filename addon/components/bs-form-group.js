@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { notEmpty, and } from '@ember/object/computed';
+import { isBlank } from '@ember/utils';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import Config from 'ember-bootstrap/config';
-
-const { computed } = Ember;
 
 /**
  This component renders a `<div class="form-group">` element, with support for validation states and feedback icons.
@@ -23,7 +24,7 @@ const { computed } = Ember;
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend({
+export default Component.extend({
 
   classNames: ['form-group'],
   classNameBindings: ['validationClass', 'hasFeedback'],
@@ -47,7 +48,7 @@ export default Ember.Component.extend({
    * @public
    * @readonly
    */
-  hasValidation: computed.notEmpty('validation'),
+  hasValidation: notEmpty('validation'),
 
   /**
    * Computed property which is true if the form group is showing a validation icon
@@ -57,7 +58,7 @@ export default Ember.Component.extend({
    * @public
    * @readonly
    */
-  hasFeedback: computed.and('hasValidation', 'useIcons', 'hasIconForValidationState'),
+  hasFeedback: and('hasValidation', 'useIcons', 'hasIconForValidationState'),
 
   /**
    * The icon classes to be used for a feedback icon in a "success" validation state.
@@ -157,7 +158,7 @@ export default Ember.Component.extend({
     return this.get(`${validation}Icon`);
   }),
 
-  hasIconForValidationState: computed.notEmpty('iconName'),
+  hasIconForValidationState: notEmpty('iconName'),
 
   /**
    * Set to a validation state to render the form-group with a validation style.
@@ -175,7 +176,7 @@ export default Ember.Component.extend({
 
   validationClass: computed('validation', function() {
     let validation = this.get('validation');
-    if (!Ember.isBlank(validation)) {
+    if (!isBlank(validation)) {
       return `has-${this.get('validation')}`;
     }
   })

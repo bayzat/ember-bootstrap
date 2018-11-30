@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { $ } = Ember;
+import $ from 'jquery';
 
 export default function getPosition($element) {
   let el = $element.get(0);

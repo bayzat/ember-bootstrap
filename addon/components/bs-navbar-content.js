@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { reads } from '@ember/object/computed';
+import { computed } from '@ember/object';
 import BsCollapseComponent from 'ember-bootstrap/components/bs-collapse';
 import NavbarComponent from 'ember-bootstrap/components/bs-navbar';
 import layout from '../templates/components/bs-navbar-content';
@@ -17,9 +18,9 @@ export default BsCollapseComponent.extend({
 
   classNames: ['navbar-collapse'],
 
-  navbar: Ember.computed(function() {
+  navbar: computed(function() {
     return this.nearestOfType(NavbarComponent);
   }),
 
-  collapsed: Ember.computed.reads('navbar.collapsed')
+  collapsed: reads('navbar.collapsed')
 });

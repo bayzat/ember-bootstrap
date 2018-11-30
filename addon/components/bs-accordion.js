@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import ComponentParent from 'ember-bootstrap/mixins/component-parent';
 
 /**
@@ -30,7 +30,7 @@ import ComponentParent from 'ember-bootstrap/mixins/component-parent';
  @uses Mixins.ComponentParent
  @public
  */
-export default Ember.Component.extend(ComponentParent, {
+export default Component.extend(ComponentParent, {
   classNames: ['panel-group'],
   ariaRole: 'tablist',
 

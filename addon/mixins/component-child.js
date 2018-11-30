@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { on } from '@ember/object/evented';
+import Mixin from '@ember/object/mixin';
 import ComponentParentMixin from 'ember-bootstrap/mixins/component-parent';
 
 /**
@@ -8,7 +9,7 @@ import ComponentParentMixin from 'ember-bootstrap/mixins/component-parent';
  * @namespace Mixins
  * @private
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
 
   /**
    * flag to check if component has already been rendered, for the `_willRender` event handler
@@ -25,7 +26,7 @@ export default Ember.Mixin.create({
    * @method _willRender
    * @private
    */
-  _willRender: Ember.on('willRender', function() {
+  _willRender: on('willRender', function() {
     if (!this._didInsert) {
       this._didInsert = true;
       let parent = this.nearestOfType(ComponentParentMixin);
@@ -51,7 +52,7 @@ export default Ember.Mixin.create({
    * @method _willDestroyElement
    * @private
    */
-  _willDestroyElement: Ember.on('willDestroyElement', function() {
+  _willDestroyElement: on('willDestroyElement', function() {
     let parent = this.nearestOfType(ComponentParentMixin) || this.get('_parent');
     if (parent) {
       parent.removeChild(this);

@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   formLayout: 'vertical',
   email: null,
   password: null,
   rememberMe: false,
-  genderChoices: Ember.A([
+  genderChoices: A([
     {
       id: 'f',
       label: 'Female'

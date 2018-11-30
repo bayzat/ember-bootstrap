@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import LinkComponent from '@ember/routing/link-component';
 import ComponentChildMixin from 'ember-bootstrap/mixins/component-child';
-
-const { LinkComponent } = Ember;
 
 export function initialize(/* application */) {
   if (!ComponentChildMixin.detect(LinkComponent)) {

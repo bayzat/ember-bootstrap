@@ -1,6 +1,7 @@
+import { run } from '@ember/runloop';
+import { Promise } from 'rsvp';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 moduleForComponent('bs-button', 'Integration | Component | bs-button', {
   integration: true
@@ -112,7 +113,7 @@ test('clicking a button sends default action with callback, if promise is return
   let resolvePromise;
 
   this.on('testAction', (actionParam, evt, cb) => {
-    promise = new Ember.RSVP.Promise(function(resolve) {
+    promise = new Promise(function(resolve) {
       resolvePromise = resolve;
     });
     cb(promise);
@@ -125,7 +126,7 @@ test('clicking a button sends default action with callback, if promise is return
   assert.equal(this.get('textState'), 'pending');
   assert.equal(this.$('button').text(), 'pending');
 
-  Ember.run(resolvePromise);
+  run(resolvePromise);
 
   assert.equal(this.get('textState'), 'resolved');
   assert.equal(this.$('button').text(), 'resolved');
@@ -137,7 +138,7 @@ test('clicking a button sends default action, if promise is returned from closur
   let resolvePromise;
 
   this.on('testAction', () => {
-    promise = new Ember.RSVP.Promise(function(resolve) {
+    promise = new Promise(function(resolve) {
       resolvePromise = resolve;
     });
     return promise;
@@ -150,7 +151,7 @@ test('clicking a button sends default action, if promise is returned from closur
   assert.equal(this.get('textState'), 'pending');
   assert.equal(this.$('button').text(), 'pending');
 
-  Ember.run(resolvePromise);
+  run(resolvePromise);
 
   assert.equal(this.get('textState'), 'resolved');
   assert.equal(this.$('button').text(), 'resolved');

@@ -1,6 +1,7 @@
+import $ from 'jquery';
+import Component from '@ember/component';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 moduleForComponent('bs-modal', 'Integration | Component | bs-modal', {
   integration: true
@@ -133,7 +134,7 @@ test('clicking ok button closes modal when autoClose=true', function(assert) {
 });
 
 test('clicking ok button closes modal when autoClose=true with custom component hierarchy', function(assert) {
-  this.register('component:my-component', Ember.Component.extend({
+  this.register('component:my-component', Component.extend({
     layout: hbs`{{yield}}`
   }));
 
@@ -398,7 +399,7 @@ test('Pressing escape key will close the modal if keyboard=true', function(asser
     assert.equal(this.$('.modal').hasClass('in'), true, 'Modal is visible');
 
     // trigger escape key event
-    let e = Ember.$.Event('keydown');
+    let e = $.Event('keydown');
     e.which = e.keyCode = 27;
     this.$('.modal').trigger(e);
 
@@ -428,7 +429,7 @@ test('Pressing escape key will close the modal if keyboard=true and element is a
     assert.equal(this.$('.modal').hasClass('in'), true, 'Modal is visible');
 
     // trigger escape key event
-    let e = Ember.$.Event('keydown');
+    let e = $.Event('keydown');
     e.which = e.keyCode = 27;
     this.$('.modal').trigger(e);
 
@@ -453,7 +454,7 @@ test('Pressing escape key is ignored if keyboard=false', function(assert) {
     assert.equal(this.$('.modal').hasClass('in'), true, 'Modal is visible');
 
     // trigger escape key event
-    let e = Ember.$.Event('keydown');
+    let e = $.Event('keydown');
     e.which = e.keyCode = 27;
     this.$('.modal').trigger(e);
 

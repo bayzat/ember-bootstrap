@@ -1,6 +1,6 @@
-import Ember from 'ember';
-
-const { computed } = Ember;
+import { isBlank } from '@ember/utils';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 
 /**
   Internal component for modal's markup and event handling. Should not be used directly.
@@ -10,7 +10,7 @@ const { computed } = Ember;
   @extends Ember.Component
   @private
  */
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['modal'],
   classNameBindings: ['fade', 'in'],
   attributeBindings: ['tabindex'],
@@ -131,7 +131,7 @@ export default Ember.Component.extend({
    */
   sizeClass: computed('size', function() {
     let size = this.get('size');
-    return Ember.isBlank(size) ? null : `modal-${size}`;
+    return isBlank(size) ? null : `modal-${size}`;
   }),
 
   keyDown(e) {

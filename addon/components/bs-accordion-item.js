@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import { oneWay, alias, not, reads } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import TypeClass from 'ember-bootstrap/mixins/type-class';
 import ComponentChild from 'ember-bootstrap/mixins/component-child';
 import Accordion from 'ember-bootstrap/components/bs-accordion';
-
-const { computed } = Ember;
 
 /**
  A collapsible/expandable item within an accordion
@@ -18,7 +18,7 @@ const { computed } = Ember;
  @uses Mixins.TypeClass
  @public
  */
-export default Ember.Component.extend(ComponentChild, TypeClass, {
+export default Component.extend(ComponentChild, TypeClass, {
   classNames: ['panel'],
 
   /**
@@ -44,14 +44,14 @@ export default Ember.Component.extend(ComponentChild, TypeClass, {
    * @property value
    * @public
    */
-  value: computed.oneWay('elementId'),
+  value: oneWay('elementId'),
 
-  selected: computed.alias('accordion.selected'),
+  selected: alias('accordion.selected'),
 
   collapsed: computed('value', 'selected', function() {
     return this.get('value') !== this.get('selected');
   }),
-  active: computed.not('collapsed'),
+  active: not('collapsed'),
 
   /**
    * Reference to the parent `Components.Accordion` class.
@@ -63,7 +63,7 @@ export default Ember.Component.extend(ComponentChild, TypeClass, {
     return this.nearestOfType(Accordion);
   }),
 
-  target: computed.reads('accordion'),
+  target: reads('accordion'),
 
   actions: {
     toggleActive() {

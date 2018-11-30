@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../templates/components/bs-tooltip-element';
 
 /**
@@ -9,7 +9,7 @@ import layout from '../templates/components/bs-tooltip-element';
  @extends Ember.Component
  @private
  */
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['tooltip'],

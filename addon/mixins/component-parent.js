@@ -1,4 +1,7 @@
-import Ember from 'ember';
+import { schedule } from '@ember/runloop';
+import { A } from '@ember/array';
+import { on } from '@ember/object/evented';
+import Mixin from '@ember/object/mixin';
 
 /**
  * Mixin for components that act as a parent component in a parent-child relationship of components
@@ -7,7 +10,7 @@ import Ember from 'ember';
  * @namespace Mixins
  * @private
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
 
   /**
    * Array of registered child components
@@ -18,8 +21,8 @@ export default Ember.Mixin.create({
    */
   children: null,
 
-  _onInit: Ember.on('init', function() {
-    this.set('children', Ember.A());
+  _onInit: on('init', function() {
+    this.set('children', A());
   }),
 
   /**
@@ -30,7 +33,7 @@ export default Ember.Mixin.create({
    * @public
    */
   registerChild(child) {
-    Ember.run.schedule('sync', this, function() {
+    schedule('sync', this, function() {
       this.get('children').addObject(child);
     });
   },

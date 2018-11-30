@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinonTest from 'dummy/tests/ember-sinon-qunit/test';
@@ -93,7 +93,7 @@ test('it allows changing the trigger element to some arbitrary element', functio
 });
 
 test('it allows changing the trigger element to the parent view', function(assert) {
-  let dummyComponent = Ember.Component.extend({
+  let dummyComponent = Component.extend({
     layout: hbs`<div>{{yield}}</div>`
   });
   this.register('component:dum-my', dummyComponent);

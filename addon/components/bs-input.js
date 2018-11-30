@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import TextField from '@ember/component/text-field';
 
 /**
  Extends Ember.TextField to add Bootstrap's 'form-control' class.
@@ -8,6 +8,6 @@ import Ember from 'ember';
  @extends Ember.TextField
  @public
  */
-export default Ember.TextField.extend({
+export default TextField.extend({
   classNames: ['form-control']
 });

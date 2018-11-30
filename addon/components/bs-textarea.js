@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import TextArea from '@ember/component/text-area';
 
 /**
  Extends Ember.TextArea to add Bootstrap's 'form-control' class.
@@ -8,6 +8,6 @@ import Ember from 'ember';
  @extends Ember.TextArea
  @public
  */
-export default Ember.TextArea.extend({
+export default TextArea.extend({
   classNames: ['form-control']
 });

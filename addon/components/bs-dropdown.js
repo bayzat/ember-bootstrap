@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import { bind } from '@ember/runloop';
+import $ from 'jquery';
+import Component from '@ember/component';
+import { observer, computed } from '@ember/object';
 import toggleButton from 'ember-bootstrap/components/bs-dropdown-button';
 import ComponentParent from 'ember-bootstrap/mixins/component-parent';
-
-const { computed, observer } = Ember;
 
 /**
  Bootstrap style dropdown menus, consisting of a toggle element, and the dropdown menu itself.
@@ -75,7 +76,7 @@ const { computed, observer } = Ember;
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend(ComponentParent, {
+export default Component.extend(ComponentParent, {
   classNameBindings: ['open', 'containerClass'],
 
   /**
@@ -166,15 +167,15 @@ export default Ember.Component.extend(ComponentParent, {
 
   handleClickEvents: observer('open', function() {
     if (this.get('open')) {
-      Ember.$(document).on(this.clickEventName, Ember.run.bind(this, this.closeOnClickHandler));
+      $(document).on(this.clickEventName, bind(this, this.closeOnClickHandler));
     } else {
-      Ember.$(document).off(this.clickEventName);
+      $(document).off(this.clickEventName);
     }
   }),
 
   willDestroyElement() {
     this._super();
-    Ember.$(document).off(this.clickEventName);
+    $(document).off(this.clickEventName);
   },
 
   init() {
@@ -192,7 +193,7 @@ export default Ember.Component.extend(ComponentParent, {
    * @protected
    */
   closeOnClickHandler(e) {
-    let $target = Ember.$(e.target);
+    let $target = $(e.target);
     if (!this.get('isDestroyed') &&
       $target.closest(this.$().find('.dropdown-toggle')).length === 0 &&
       ($target.closest(this.$().find('.dropdown-menu')).length === 0 || this.get('closeOnMenuClick'))) {
