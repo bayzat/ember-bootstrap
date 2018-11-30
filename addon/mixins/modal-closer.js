@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Mixin from '@ember/object/mixin';
 import ModalComponent from '../components/bs-modal';
 
 /**
@@ -6,8 +7,8 @@ import ModalComponent from '../components/bs-modal';
  * @namespace Mixins
  * @private
  */
-export default Ember.Mixin.create({
-  target: Ember.computed(function() {
+export default Mixin.create({
+  target: computed(function() {
     return this.nearestOfType(ModalComponent);
   }).volatile(),
 

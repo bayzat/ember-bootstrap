@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
 import ModalCloser from 'ember-bootstrap/mixins/modal-closer';
-
-const { computed } = Ember;
 
 /**
 
@@ -12,7 +11,7 @@ const { computed } = Ember;
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend(ModalCloser, {
+export default Component.extend(ModalCloser, {
   tagName: 'form',
   classNames: ['modal-footer'],
 
@@ -38,7 +37,7 @@ export default Ember.Component.extend(ModalCloser, {
    */
   submitTitle: null,
 
-  hasSubmitButton: computed.notEmpty('submitTitle'),
+  hasSubmitButton: notEmpty('submitTitle'),
 
   /**
    * Set to true to disable the submit button. If you bind this to some property that indicates if submitting is allowed

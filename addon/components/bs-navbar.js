@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import TypeClass from 'ember-bootstrap/mixins/type-class';
 import layout from '../templates/components/bs-navbar';
 
@@ -58,7 +59,7 @@ import layout from '../templates/components/bs-navbar';
  @public
 
  */
-export default Ember.Component.extend(TypeClass, {
+export default Component.extend(TypeClass, {
   layout,
 
   tagName: 'nav',
@@ -98,7 +99,7 @@ export default Ember.Component.extend(TypeClass, {
    */
   position: null,
 
-  positionClass: Ember.computed('position', function() {
+  positionClass: computed('position', function() {
     let position = this.get('position');
     let validPositions = ['fixed-top', 'fixed-bottom', 'static-top'];
 

@@ -1,7 +1,6 @@
-import
-Ember
-from
-'ember';
+import { gt, filter, filterBy } from '@ember/object/computed';
+import Component from '@ember/component';
+import LinkComponent from '@ember/routing/link-component';
 import
 layout
 from
@@ -10,8 +9,6 @@ import
 ComponentParent
 from
 'ember-bootstrap/mixins/component-parent';
-
-const { computed, LinkComponent } = Ember;
 
 /**
 
@@ -24,7 +21,7 @@ const { computed, LinkComponent } = Ember;
  @public
  */
 export default
-Ember.Component.extend(ComponentParent, {
+Component.extend(ComponentParent, {
   layout,
   classNameBindings: ['disabled', 'active'],
   tagName: 'li',
@@ -39,7 +36,7 @@ Ember.Component.extend(ComponentParent, {
    * @type boolean
    * @public
    */
-  disabled: computed.gt('disabledChildLinks.length', 0),
+  disabled: gt('disabledChildLinks.length', 0),
 
   /**
    * Render the nav item as active.
@@ -51,7 +48,7 @@ Ember.Component.extend(ComponentParent, {
    * @type boolean
    * @public
    */
-  active: computed.gt('activeChildLinks.length', 0),
+  active: gt('activeChildLinks.length', 0),
 
   /**
    * Collection of all `Ember.LinkComponent`s that are children
@@ -59,10 +56,10 @@ Ember.Component.extend(ComponentParent, {
    * @property childLinks
    * @private
    */
-  childLinks: computed.filter('children', function(view) {
+  childLinks: filter('children', function(view) {
     return view instanceof LinkComponent;
   }),
 
-  activeChildLinks: computed.filterBy('childLinks', 'active'),
-  disabledChildLinks: computed.filterBy('childLinks', 'disabled')
+  activeChildLinks: filterBy('childLinks', 'active'),
+  disabledChildLinks: filterBy('childLinks', 'disabled')
 });

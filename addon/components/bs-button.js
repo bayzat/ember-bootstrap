@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import { scheduleOnce } from '@ember/runloop';
+import Component from '@ember/component';
+import { observer, computed } from '@ember/object';
+import { typeOf } from '@ember/utils';
 import TypeClass from 'ember-bootstrap/mixins/type-class';
 import SizeClass from 'ember-bootstrap/mixins/size-class';
 import ComponentChild from 'ember-bootstrap/mixins/component-child';
-
-const { computed, observer, typeOf } = Ember;
 
 /**
  Implements a HTML button element, with support for all [Bootstrap button CSS styles](http://getbootstrap.com/css/#buttons)
@@ -78,7 +79,7 @@ export default Ember.Controller.extend({
  @uses Mixins.SizeClass
  @public
  */
-export default Ember.Component.extend(ComponentChild, TypeClass, SizeClass, {
+export default Component.extend(ComponentChild, TypeClass, SizeClass, {
   tagName: 'button',
   classNames: ['btn'],
   classNameBindings: ['active', 'block:btn-block'],
@@ -240,7 +241,7 @@ export default Ember.Component.extend(ComponentChild, TypeClass, SizeClass, {
 
   resetObserver: observer('reset', function() {
     if (this.get('reset')) {
-      Ember.run.scheduleOnce('actions', this, function() {
+      scheduleOnce('actions', this, function() {
         this.set('textState', 'default');
       });
     }

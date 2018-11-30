@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import { oneWay } from '@ember/object/computed';
+import Controller from '@ember/controller';
+import { A } from '@ember/array';
 
-const { computed, A } = Ember;
-
-export default Ember.Controller.extend({
-  type: computed.oneWay('typeChoices.lastObject'),
+export default Controller.extend({
+  type: oneWay('typeChoices.lastObject'),
   typeChoices: A([
     {
       id: 'pills'

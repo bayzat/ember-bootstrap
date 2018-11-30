@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 /**
  Use to group one (or more) [Components.ProgressBar](Components.ProgressBar.html) components inside it.
@@ -8,6 +8,6 @@ import Ember from 'ember';
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['progress']
 });

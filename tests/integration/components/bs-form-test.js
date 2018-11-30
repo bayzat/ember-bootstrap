@@ -1,6 +1,6 @@
+import $ from 'jquery';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 // import EmberValidations from 'ember-validations';
 
 moduleForComponent('bs-form', 'Integration | Component | bs-form', {
@@ -129,7 +129,7 @@ test('Pressing enter on a form with submitOnEnter submits the form', function(as
     assert.ok(true, 'Default action has been called.');
   });
   this.render(hbs`{{#bs-form action=(action "testAction") submitOnEnter=true}}Test{{/bs-form}}`);
-  let e = Ember.$.Event('keypress');
+  let e = $.Event('keypress');
   e.which = e.keyCode = 13;
   assert.expect(1);
 

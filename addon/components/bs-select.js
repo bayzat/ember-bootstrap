@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { deprecate } from '@ember/application/deprecations';
+import Component from '@ember/component';
 
 /**
  Selectbox component.
@@ -18,7 +19,7 @@ import Ember from 'ember';
  @deprecated
  @public
  */
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'select',
   classNames: ['form-control'],
 
@@ -37,7 +38,7 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
 
-    Ember.deprecate('bs-select is deprecated and will be removed in the future. Please use a dedicated addon for select box components', false, {
+    deprecate('bs-select is deprecated and will be removed in the future. Please use a dedicated addon for select box components', false, {
       url: 'http://kaliber5.github.io/ember-bootstrap/api/classes/Components.Select.html',
       until: '0.8.0',
       id: 'ember-bootstrap.component.select'

@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { readOnly, not, and } from '@ember/object/computed';
+import { later } from '@ember/runloop';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
 import TypeClass from 'ember-bootstrap/mixins/type-class';
-
-const { computed, observer } = Ember;
 
 /**
  Implements Bootstrap alerts, see http://getbootstrap.com/components/#alerts
@@ -21,7 +22,7 @@ const { computed, observer } = Ember;
  @uses Mixins.TypeClass
  @public
  */
-export default Ember.Component.extend(TypeClass, {
+export default Component.extend(TypeClass, {
   classNameBindings: ['alert', 'fade', 'in', 'alert-dismissible'],
 
   /**
@@ -34,7 +35,7 @@ export default Ember.Component.extend(TypeClass, {
    * @public
    */
   dismissible: true,
-  'alert-dismissible': computed.readOnly('dismissible'),
+  'alert-dismissible': readOnly('dismissible'),
 
   /**
    * If true the alert is completely hidden. Will be set when the fade animation has finished.
@@ -57,7 +58,7 @@ export default Ember.Component.extend(TypeClass, {
    * @public
    */
   visible: true,
-  notVisible: computed.not('visible'),
+  notVisible: not('visible'),
 
   /**
    * Set to false to disable the fade out animation when hiding the alert.
@@ -77,8 +78,8 @@ export default Ember.Component.extend(TypeClass, {
    * @type boolean
    * @private
    */
-  alert: computed.not('hidden'),
-  in: computed.and('visible', 'fade'),
+  alert: not('hidden'),
+  in: and('visible', 'fade'),
 
   /**
    * @property classTypePrefix
@@ -143,7 +144,7 @@ export default Ember.Component.extend(TypeClass, {
    */
   hide() {
     if (this.get('fade')) {
-      Ember.run.later(this, function() {
+      later(this, function() {
         if (!this.get('isDestroyed')) {
           this.set('hidden', true);
           this.sendAction('dismissedAction');

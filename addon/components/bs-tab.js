@@ -1,9 +1,11 @@
-import Ember from 'ember';
+import { oneWay, filter } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isPresent } from '@ember/utils';
+import { A } from '@ember/array';
 import layout from '../templates/components/bs-tab';
 import ComponentParent from 'ember-bootstrap/mixins/component-parent';
 import TabPane from './bs-tab-pane';
-
-const { computed, isPresent, A } = Ember;
 
 /**
  Tab component for dynamic tab functionality that mimics the behaviour of Bootstrap's tab.js plugin,
@@ -105,7 +107,7 @@ const { computed, isPresent, A } = Ember;
  @uses Mixins.ComponentParent
  @public
  */
-export default Ember.Component.extend(ComponentParent, {
+export default Component.extend(ComponentParent, {
   layout,
 
   /**
@@ -148,7 +150,7 @@ export default Ember.Component.extend(ComponentParent, {
    * @type string
    * @public
    */
-  activeId: computed.oneWay('childPanes.firstObject.elementId'),
+  activeId: oneWay('childPanes.firstObject.elementId'),
 
   /**
    * Set to false to disable the fade animation when switching tabs.
@@ -186,7 +188,7 @@ export default Ember.Component.extend(ComponentParent, {
    * @readonly
    * @private
    */
-  childPanes: computed.filter('children', function(view) {
+  childPanes: filter('children', function(view) {
     return view instanceof TabPane;
   }),
 

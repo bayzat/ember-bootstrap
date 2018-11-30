@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import BootstrapLinktoInitializer from 'ember-bootstrap/initializers/bootstrap-linkto';
@@ -45,7 +45,7 @@ test('active link makes nav item active', function(assert) {
     {{/bs-nav-item}}
   `);
   assert.ok(this.$('li').hasClass('active'), 'has active class');
-  Ember.run(application, 'destroy');
+  run(application, 'destroy');
 });
 
 test('disabled link makes nav item disabled', function(assert) {
@@ -59,5 +59,5 @@ test('disabled link makes nav item disabled', function(assert) {
     {{/bs-nav-item}}
   `);
   assert.ok(this.$('li').hasClass('disabled'), 'has disabled class');
-  Ember.run(application, 'destroy');
+  run(application, 'destroy');
 });

@@ -1,8 +1,10 @@
-import Ember from 'ember';
+import { filter } from '@ember/object/computed';
+import { Promise } from 'rsvp';
+import { deprecate } from '@ember/application/deprecations';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import FormElement from 'ember-bootstrap/components/bs-form-element';
 import ComponentParent from 'ember-bootstrap/mixins/component-parent';
-
-const { computed } = Ember;
 
 /**
   Render a form with the appropriate Bootstrap layout class (see `formLayout`).
@@ -75,7 +77,7 @@ const { computed } = Ember;
   @extends Ember.Component
   @public
  */
-export default Ember.Component.extend(ComponentParent, {
+export default Component.extend(ComponentParent, {
   tagName: 'form',
   classNameBindings: ['layoutClass'],
   attributeBindings: ['_novalidate:novalidate'],
@@ -171,7 +173,7 @@ export default Ember.Component.extend(ComponentParent, {
    * @readonly
    * @protected
    */
-  childFormElements: computed.filter('children', function(view) {
+  childFormElements: filter('children', function(view) {
     return view instanceof FormElement;
   }),
 
@@ -184,7 +186,7 @@ export default Ember.Component.extend(ComponentParent, {
    * @public
    */
   validate(/* model */) {
-    Ember.deprecate('[ember-bootstrap] Validation support has been moved to 3rd party addons.\n' +
+    deprecate('[ember-bootstrap] Validation support has been moved to 3rd party addons.\n' +
                     'ember-validations: https://github.com/kaliber5/ember-bootstrap-validations\n' +
                     'ember-cp-validations: https://github.com/offirgolan/ember-bootstrap-cp-validations\n',
       false,
@@ -243,7 +245,7 @@ export default Ember.Component.extend(ComponentParent, {
       return this.sendAction('action', model);
     } else {
       let validationPromise = this.validate(this.get('model'));
-      if (validationPromise && validationPromise instanceof Ember.RSVP.Promise) {
+      if (validationPromise && validationPromise instanceof Promise) {
         validationPromise.then((r) => this.sendAction('action', model, r), (err) => {
           this.get('childFormElements').setEach('showValidation', true);
           return this.sendAction('invalid', err);

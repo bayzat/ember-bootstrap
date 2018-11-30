@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import ModalCloser from 'ember-bootstrap/mixins/modal-closer';
 
 /**
@@ -10,7 +10,7 @@ import ModalCloser from 'ember-bootstrap/mixins/modal-closer';
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend(ModalCloser, {
+export default Component.extend(ModalCloser, {
   classNames: ['modal-header'],
 
   /**

@@ -1,6 +1,12 @@
-import Ember from 'ember';
-
-const { computed, observer } = Ember;
+import { not, alias, and } from '@ember/object/computed';
+import { on } from '@ember/object/evented';
+import { camelize } from '@ember/string';
+import { bind, next } from '@ember/runloop';
+import $ from 'jquery';
+import { htmlSafe } from '@ember/template';
+import { isEmpty, isPresent } from '@ember/utils';
+import Component from '@ember/component';
+import { observer, computed } from '@ember/object';
 
 /**
  An Ember component that mimics the behaviour of Bootstrap's collapse.js plugin, see http://getbootstrap.com/javascript/#collapse
@@ -19,7 +25,7 @@ const { computed, observer } = Ember;
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend({
+export default Component.extend({
 
   classNameBindings: ['collapse', 'in', 'collapsing'],
   attributeBindings: ['style'],
@@ -42,9 +48,9 @@ export default Ember.Component.extend({
    */
   active: false,
 
-  collapse: computed.not('transitioning'),
-  collapsing: computed.alias('transitioning'),
-  'in': computed.and('collapse', 'active'),
+  collapse: not('transitioning'),
+  collapsing: alias('transitioning'),
+  'in': and('collapse', 'active'),
 
   /**
    * true if the component is currently transitioning
@@ -107,10 +113,10 @@ export default Ember.Component.extend({
   style: computed('collapseSize', function() {
     let size = this.get('collapseSize');
     let dimension = this.get('collapseDimension');
-    if (Ember.isEmpty(size)) {
-      return Ember.String.htmlSafe('');
+    if (isEmpty(size)) {
+      return htmlSafe('');
     }
-    return Ember.String.htmlSafe(`${dimension}: ${size}px`);
+    return htmlSafe(`${dimension}: ${size}px`);
   }),
 
   /**
@@ -136,17 +142,17 @@ export default Ember.Component.extend({
       active: true
     });
 
-    if (!Ember.$.support.transition) {
+    if (!$.support.transition) {
       return complete.call(this);
     }
 
     this.$()
-      .one('bsTransitionEnd', Ember.run.bind(this, complete))
+      .one('bsTransitionEnd', bind(this, complete))
       // @todo: make duration configurable
       .emulateTransitionEnd(350)
     ;
 
-    Ember.run.next(this, function() {
+    next(this, function() {
       if (!this.get('isDestroyed')) {
         this.set('collapseSize', this.getExpandedSize('show'));
       }
@@ -163,13 +169,13 @@ export default Ember.Component.extend({
    */
   getExpandedSize($action) {
     let expandedSize = this.get('expandedSize');
-    if (Ember.isPresent(expandedSize)) {
+    if (isPresent(expandedSize)) {
       return expandedSize;
     }
 
     let collapseElement = this.$();
     let prefix = $action === 'show' ? 'scroll' : 'offset';
-    let measureProperty = Ember.String.camelize(`${prefix}-${this.get('collapseDimension')}`);
+    let measureProperty = camelize(`${prefix}-${this.get('collapseDimension')}`);
     return collapseElement[0][measureProperty];
   },
 
@@ -197,17 +203,17 @@ export default Ember.Component.extend({
       active: false
     });
 
-    if (!Ember.$.support.transition) {
+    if (!$.support.transition) {
       return complete.call(this);
     }
 
     this.$()
-      .one('bsTransitionEnd', Ember.run.bind(this, complete))
+      .one('bsTransitionEnd', bind(this, complete))
       // @todo: make duration configurable
       .emulateTransitionEnd(350)
     ;
 
-    Ember.run.next(this, function() {
+    next(this, function() {
       if (!this.get('isDestroyed')) {
         this.set('collapseSize', this.get('collapsedSize'));
       }
@@ -227,7 +233,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  _onInit: Ember.on('init', function() {
+  _onInit: on('init', function() {
     this.set('active', !this.get('collapsed'));
   }),
 

@@ -1,6 +1,5 @@
-import Ember from 'ember';
-
-const { computed } = Ember;
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 
 /**
  Component for the dropdown menu.
@@ -12,7 +11,7 @@ const { computed } = Ember;
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend({
+export default Component.extend({
 
   /**
    * Defaults to a `<ul>` tag. Change for other types of dropdown menus.

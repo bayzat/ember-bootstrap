@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 /**
 
@@ -9,6 +9,6 @@ import Ember from 'ember';
  @extends Ember.Component
  @public
  */
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['modal-body']
 });

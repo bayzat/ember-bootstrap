@@ -1,34 +1,31 @@
-import Ember from 'ember';
+import { or, reads, gt } from '@ember/object/computed';
+import { assert } from '@ember/debug';
+import Component from '@ember/component';
+import { guidFor } from '@ember/object/internals';
+import { isArray } from '@ember/array';
+import { isBlank } from '@ember/utils';
+import EmberObject, { observer, computed } from '@ember/object';
+import $ from 'jquery';
+import {
+  next,
+  schedule,
+  bind,
+  cancel,
+  later,
+  run
+} from '@ember/runloop';
 import getPosition from '../utils/get-position';
 import getCalculatedOffset from '../utils/get-calculated-offset';
 import getParent from '../utils/get-parent';
 
-const {
-  assert,
-  Component,
-  computed,
-  guidFor,
-  isArray,
-  isBlank,
-  observer,
-  run,
-  $,
-  run: {
-    later,
-    cancel,
-    bind,
-    schedule,
-    next
-  }
-} = Ember;
 const eventNamespace = 'bs-contextual-help';
 const noop = function() { return this };
 
-const InState = Ember.Object.extend({
+const InState = EmberObject.extend({
   hover: false,
   focus: false,
   click: false,
-  in: computed.or('hover', 'focus', 'click')
+  in: or('hover', 'focus', 'click')
 });
 
 /**
@@ -58,7 +55,7 @@ export default Component.extend({
    */
   placement: 'top',
 
-  _placement: computed.reads('placement'),
+  _placement: reads('placement'),
 
   /**
    * When `true` it will dynamically reorient the tooltip/popover. For example, if `placement` is "left", the
@@ -86,7 +83,7 @@ export default Component.extend({
    * @type boolean
    * @private
    */
-  inDom: computed.reads('visible'),
+  inDom: reads('visible'),
 
   /**
    * Set to false to disable fade animations.
@@ -106,7 +103,7 @@ export default Component.extend({
    * @default false
    * @private
    */
-  in: computed.reads('visible'),
+  in: reads('visible'),
 
   /**
    * Delay showing and hiding the tooltip/popover (ms). Individual delays for showing and hiding can be specified by using the
@@ -127,7 +124,7 @@ export default Component.extend({
    * @default 0
    * @public
    */
-  delayShow: computed.reads('delay'),
+  delayShow: reads('delay'),
 
   /**
    * Delay hiding the tooltip/popover. This property overrides the general delay set with the `delay` property.
@@ -137,10 +134,10 @@ export default Component.extend({
    * @default 0
    * @public
    */
-  delayHide: computed.reads('delay'),
+  delayHide: reads('delay'),
 
-  hasDelayShow: computed.gt('delayShow', 0),
-  hasDelayHide: computed.gt('delayHide', 0),
+  hasDelayShow: gt('delayShow', 0),
+  hasDelayHide: gt('delayHide', 0),
 
   /**
    * The duration of the fade transition
@@ -185,7 +182,7 @@ export default Component.extend({
    * @private
    */
   usesTransition: computed('fade', function() {
-    return Ember.$.support.transition && this.get('fade');
+    return $.support.transition && this.get('fade');
   }),
 
   /**
@@ -209,7 +206,7 @@ export default Component.extend({
    * @private
    */
   overlayElement: computed('overlayId', function() {
-    return Ember.$(`#${this.get('overlayId')}`);
+    return $(`#${this.get('overlayId')}`);
   }).volatile(),
 
   /**
@@ -311,7 +308,7 @@ export default Component.extend({
    * @private
    */
   _renderInPlace: computed('renderInPlace', function() {
-    return this.get('renderInPlace') || typeof Ember.$ !== 'function' || Ember.$('#ember-bootstrap-modal-container').length === 0;
+    return this.get('renderInPlace') || typeof $ !== 'function' || $('#ember-bootstrap-modal-container').length === 0;
   }),
 
   /**

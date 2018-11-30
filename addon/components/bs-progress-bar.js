@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import TypeClass from 'ember-bootstrap/mixins/type-class';
-
-const { computed } = Ember;
 
 /**
 
@@ -38,7 +39,7 @@ const { computed } = Ember;
  @uses Mixins.TypeClass
  @public
  */
-export default Ember.Component.extend(TypeClass, {
+export default Component.extend(TypeClass, {
   classNames: ['progress-bar'],
   classNameBindings: ['progressBarStriped', 'active'],
 
@@ -132,12 +133,12 @@ export default Ember.Component.extend(TypeClass, {
    */
   roundDigits: 0,
 
-  progressBarStriped: computed.alias('striped'),
-  active: computed.alias('animate'),
+  progressBarStriped: alias('striped'),
+  active: alias('animate'),
 
-  ariaValuenow: computed.alias('value'),
-  ariaValuemin: computed.alias('minValue'),
-  ariaValuemax: computed.alias('maxValue'),
+  ariaValuenow: alias('value'),
+  ariaValuemin: alias('minValue'),
+  ariaValuemax: alias('maxValue'),
 
   /**
    * The percentage of `value`
@@ -176,7 +177,7 @@ export default Ember.Component.extend(TypeClass, {
    */
   style: computed('percent', function() {
     let percent = this.get('percent');
-    return new Ember.String.htmlSafe(`width: ${percent}%`);
+    return new htmlSafe(`width: ${percent}%`);
   })
 
 });

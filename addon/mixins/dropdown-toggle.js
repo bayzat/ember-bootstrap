@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Mixin from '@ember/object/mixin';
 import componentChild from 'ember-bootstrap/mixins/component-child';
 
 /**
@@ -8,7 +9,7 @@ import componentChild from 'ember-bootstrap/mixins/component-child';
  * @namespace Mixins
  * @private
  */
-export default Ember.Mixin.create(componentChild, {
+export default Mixin.create(componentChild, {
   classNames: ['dropdown-toggle'],
 
   /**
@@ -19,7 +20,7 @@ export default Ember.Mixin.create(componentChild, {
    */
   ariaRole: 'button',
 
-  target: Ember.computed.alias('parentView'),
+  target: alias('parentView'),
 
   /**
    * The default action is set to "toggleDropdown" on the parent {{#crossLink "Components.Dropdown"}}{{/crossLink}}

@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import EmberValidations from 'ember-validations';
 
-export default Ember.Object.extend(EmberValidations, {
+export default EmberObject.extend(EmberValidations, {
   email: null,
   password: null,
   rememberMe: false,

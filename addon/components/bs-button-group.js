@@ -1,8 +1,10 @@
-import Ember from 'ember';
+import { filterBy, setDiff } from '@ember/object/computed';
+import { scheduleOnce } from '@ember/runloop';
+import { A, isArray } from '@ember/array';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
 import SizeClass from 'ember-bootstrap/mixins/size-class';
 import ComponentParent from 'ember-bootstrap/mixins/component-parent';
-
-const { computed, observer } = Ember;
 
 /**
  Bootstrap-style button group, that visually groups buttons, and optionally adds radio/checkbox like behaviour.
@@ -60,7 +62,7 @@ const { computed, observer } = Ember;
  @uses Mixins.SizeClass
  @public
  */
-export default Ember.Component.extend(ComponentParent, SizeClass, {
+export default Component.extend(ComponentParent, SizeClass, {
   /**
    * @type string
    * @property ariaRole
@@ -166,7 +168,7 @@ export default Ember.Component.extend(ComponentParent, SizeClass, {
       return;
     }
     let value = this.get('value');
-    let values = Ember.A(!Ember.isArray(value) ? [value] : value);
+    let values = A(!isArray(value) ? [value] : value);
     this.get('children')
       .forEach(function(button) {
         button.set('active', values.includes(button.get('value')));
@@ -179,10 +181,10 @@ export default Ember.Component.extend(ComponentParent, SizeClass, {
    * @type array
    * @protected
    */
-  activeChildren: computed.filterBy('children', 'active', true),
+  activeChildren: filterBy('children', 'active', true),
 
   lastActiveChildren: null,
-  newActiveChildren: computed.setDiff('activeChildren', 'lastActiveChildren'),
+  newActiveChildren: setDiff('activeChildren', 'lastActiveChildren'),
   _observeButtons: observer('activeChildren.[]', 'type', function() {
     let type = this.get('type');
 
@@ -190,13 +192,13 @@ export default Ember.Component.extend(ComponentParent, SizeClass, {
       return;
     }
 
-    Ember.run.scheduleOnce('actions', this, function() {
+    scheduleOnce('actions', this, function() {
       // the button that just became active
       let value;
 
       switch (type) {
         case 'radio':
-          let newActive = Ember.A(this.get('newActiveChildren')).objectAt(0);
+          let newActive = A(this.get('newActiveChildren')).objectAt(0);
           if (newActive) {
             value = newActive.get('value');
           } else {
@@ -214,7 +216,7 @@ export default Ember.Component.extend(ComponentParent, SizeClass, {
         this.set('value', value);
       }
       // remember activeChildren, used as a replacement for a before observer as they will be deprecated in the future...
-      this.set('lastActiveChildren', Ember.A(this.get('activeChildren').slice()));
+      this.set('lastActiveChildren', A(this.get('activeChildren').slice()));
     });
   }),
 
@@ -229,7 +231,7 @@ export default Ember.Component.extend(ComponentParent, SizeClass, {
 
   init() {
     this._super();
-    this.set('lastActiveChildren', Ember.A());
+    this.set('lastActiveChildren', A());
   },
 
   _inDOM: false,
