@@ -11,7 +11,8 @@ const resolve = require('resolve');
 const defaultOptions = {
   importBootstrapTheme: false,
   importBootstrapCSS: false,
-  importBootstrapFont: false
+  importBootstrapFont: false,
+  insertEmberWormholeElementToDom: true
 };
 
 const supportedPreprocessors = [
@@ -157,6 +158,11 @@ module.exports = {
 
   warn(message) {
     this.ui.writeLine(chalk.yellow(message));
-  }
+  },
 
+  contentFor(type, config) {
+    if (type === 'body-footer' && config.environment !== 'test' && this.bootstrapOptions.insertEmberWormholeElementToDom !== false) {
+      return '<div id="ember-bootstrap-wormhole"></div>';
+    }
+  }
 };

@@ -3,5 +3,5 @@ import $ from 'jquery';
 
 export default function destroyApp(application) {
   run(application, 'destroy');
-  $('#ember-bootstrap-modal-container').remove();
+  $('#ember-bootstrap-wormhole').remove();
 }

@@ -145,7 +145,7 @@ test('clicking ok button closes modal when autoClose=true with custom component 
         {{bs-modal-footer}}
       {{/my-component}}
     {{/bs-modal}}
-    
+
   `);
 
   let done = assert.async();
@@ -185,7 +185,7 @@ test('can implement custom close buttons', function(assert) {
     {{#bs-modal title="Simple Dialog" as |modal|}}
       Hello world! <a href="#" class="close-link" {{action 'close' target=modal}}>close</a>
     {{/bs-modal}}
-    
+
   `);
 
   let done = assert.async();
@@ -352,7 +352,7 @@ test('autofocus element is focused when present and fade=false', function(assert
     {{#bs-modal title="Simple Dialog" fade=false open=open}}
       <input class="my-input" autofocus="autofocus"/> blahblahblah
     {{/bs-modal}}
-    
+
   `);
 
   this.$('.modal').one('focus', '.my-input', () => {
@@ -370,7 +370,7 @@ test('autofocus element is focused when present and fade=true', function(assert)
     {{#bs-modal title="Simple Dialog" fade=true open=open}}
       <input class="my-input" autofocus="autofocus"/>
     {{/bs-modal}}
-    
+
   `);
 
   this.$('.modal').one('focus', '.my-input', () => {
@@ -420,7 +420,7 @@ test('Pressing escape key will close the modal if keyboard=true and element is a
     {{#bs-modal title="Simple Dialog" closeAction=(action "testAction") keyboard=true}}
       <input autofocus="autofocus"/>
     {{/bs-modal}}
-    
+
   `);
   let done = assert.async();
 
@@ -512,20 +512,20 @@ test('Clicking on the backdrop is ignored when backdropClose=false', function(as
 
 test('Renders in wormhole if renderInPlace is not set', function(assert) {
   this.set('show', false);
-  this.render(hbs`<div id="ember-bootstrap-modal-container"></div>{{#if show}}{{#bs-modal title="Simple Dialog"}}Hello world!{{/bs-modal}}{{/if}}`);
+  this.render(hbs`<div id="ember-bootstrap-wormhole"></div>{{#if show}}{{#bs-modal title="Simple Dialog"}}Hello world!{{/bs-modal}}{{/if}}`);
   this.set('show', true);
 
   assert.equal(this.$('.modal').length, 1, 'Modal exists.');
-  assert.equal(this.$('.modal').parent().attr('id'), 'ember-bootstrap-modal-container');
+  assert.equal(this.$('.modal').parent().attr('id'), 'ember-bootstrap-wormhole');
 });
 
 test('Renders in place (no wormhole) if renderInPlace is set', function(assert) {
   this.set('show', false);
-  this.render(hbs`<div id="ember-bootstrap-modal-container"></div>{{#if show}}{{#bs-modal title="Simple Dialog" renderInPlace=true}}Hello world!{{/bs-modal}}{{/if}}`);
+  this.render(hbs`<div id="ember-bootstrap-wormhole"></div>{{#if show}}{{#bs-modal title="Simple Dialog" renderInPlace=true}}Hello world!{{/bs-modal}}{{/if}}`);
   this.set('show', true);
 
   assert.equal(this.$('.modal').length, 1, 'Modal exists.');
-  assert.notEqual(this.$('.modal').parent().attr('id'), 'ember-bootstrap-modal-container');
+  assert.notEqual(this.$('.modal').parent().attr('id'), 'ember-bootstrap-wormhole');
 });
 
 test('Removes "modal-open" class when component is removed from view', function(assert) {

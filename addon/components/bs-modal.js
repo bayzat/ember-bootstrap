@@ -360,7 +360,7 @@ export default Component.extend({
    * @private
    */
   _renderInPlace: computed('renderInPlace', function() {
-    return this.get('renderInPlace') || typeof $ !== 'function' || $('#ember-bootstrap-modal-container').length === 0;
+    return this.get('renderInPlace') || typeof $ !== 'function' || $('#ember-bootstrap-wormhole').length === 0;
   }),
 
   /**
