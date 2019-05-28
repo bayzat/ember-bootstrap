@@ -171,6 +171,10 @@ export default Component.extend(ComponentParent, {
     } else {
       $(document).off(this.clickEventName);
     }
+
+    const eventToTrigger = (this.get('open') ? this.onShow : this.onHide) || function () {}
+
+    eventToTrigger()
   }),
 
   willDestroyElement() {

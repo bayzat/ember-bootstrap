@@ -2,7 +2,20 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('bs-dropdown', 'Integration | Component | bs-dropdown', {
-  integration: true
+  integration: true,
+
+  beforeEach: function () {
+    this.set('onShowCalled', false)
+    this.set('onHideCalled', true)
+
+    this.on('onShow', ()=> {
+      this.set('onShowCalled', true)
+    })
+
+    this.on('onHide', ()=> {
+      this.set('onHideCalled', true)
+    })
+  }
 });
 
 test('dropdown container has dropdown class', function(assert) {
@@ -39,22 +52,26 @@ test('dropdown-toggle toggles dropdown visibility', function(assert) {
 });
 
 test('opened dropdown will close on outside click', function(assert) {
-  this.render(hbs`{{#bs-dropdown}}{{#bs-dropdown-toggle}}Dropdown <span class="caret"></span>{{/bs-dropdown-toggle}}{{#bs-dropdown-menu}}<li><a href="#">Something</a></li>{{/bs-dropdown-menu}}{{/bs-dropdown}}`);
+  this.render(hbs`{{#bs-dropdown onShow=(action "onShow") onHide=(action "onHide")}}{{#bs-dropdown-toggle}}Dropdown <span class="caret"></span>{{/bs-dropdown-toggle}}{{#bs-dropdown-menu}}<li><a href="#">Something</a></li>{{/bs-dropdown-menu}}{{/bs-dropdown}}`);
 
   this.$('a.dropdown-toggle').click();
   assert.equal(this.$(':first-child').hasClass('open'), true, 'has open class');
+  assert.ok(this.get('onShowCalled'), 'onShow should be triggered')
 
   this.$().closest(document).click();
   assert.equal(this.$(':first-child').hasClass('open'), false, 'has not open class');
+  assert.ok(this.get('onHideCalled'), 'onHide should be triggered')
 });
 
 test('clicking dropdown menu will close it', function(assert) {
-  this.render(hbs`{{#bs-dropdown}}{{#bs-dropdown-toggle}}Dropdown <span class="caret"></span>{{/bs-dropdown-toggle}}{{#bs-dropdown-menu}}<li><a href="#">Something</a></li>{{/bs-dropdown-menu}}{{/bs-dropdown}}`);
+  this.render(hbs`{{#bs-dropdown onShow=(action "onShow") onHide=(action "onHide")}}{{#bs-dropdown-toggle}}Dropdown <span class="caret"></span>{{/bs-dropdown-toggle}}{{#bs-dropdown-menu}}<li><a href="#">Something</a></li>{{/bs-dropdown-menu}}{{/bs-dropdown}}`);
   this.$('a.dropdown-toggle').click();
   assert.equal(this.$(':first-child').hasClass('open'), true, 'has open class');
+  assert.ok(this.get('onShowCalled'), 'onShow should be triggered')
 
   this.$('ul.dropdown-menu a').click();
   assert.equal(this.$(':first-child').hasClass('open'), false, 'has not open class');
+  assert.ok(this.get('onHideCalled'), 'onHide should be triggered')
 });
 
 test('clicking dropdown menu when closeOnMenuClick is false will not close it', function(assert) {
