@@ -3,12 +3,45 @@ import { assert } from '@ember/debug';
 import { bind, schedule, next } from '@ember/runloop';
 import $ from 'jquery';
 import Component from '@ember/component';
-import { observer, computed } from '@ember/object';
+import EmberObject, { observer, computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
 
-const Modal = {};
+const Modal = EmberObject.extend({
+  TRANSITION_DURATION: 300,
+  BACKDROP_TRANSITION_DURATION: 150,
 
-Modal.TRANSITION_DURATION = 300;
-Modal.BACKDROP_TRANSITION_DURATION = 150;
+  openedInstances: [],
+  hasOpenedInstance: computed('openedInstances.length', function () {
+    return this.openedInstances.length > 0
+  }),
+  bodyIsOverflowing: alias('openedInstances.firstObject.bodyIsOverflowing'),
+  addOpenedInstance(instance) {
+    if (!this.openedInstances.includes(instance)) {
+      this.openedInstances.pushObject(instance);
+    }
+
+    if (instance.backdrop) {
+      instance.backdropElement[0].style.zIndex = this.Z_INDEX_BASE
+      if (this.openedInstances.length > 1) {
+        instance.backdropElement[0].style.opacity = 0;
+      }
+    }
+    instance.modalElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1) + this.Z_INDEX_STEP / 2)
+    this.openedInstances[0].backdropElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1))
+  },
+  removeOpenedInstance(instance) {
+    if (this.openedInstances.includes(instance)) {
+      this.openedInstances.removeObject(instance);
+
+      if (this.openedInstances.length > 0) {
+        this.openedInstances[0].backdropElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1))
+      }
+    }
+  },
+
+  Z_INDEX_BASE: 1040,
+  Z_INDEX_STEP: 10
+}).create();
 
 /**
 
@@ -467,11 +500,16 @@ export default Component.extend({
    * @private
    */
   show() {
+    if (!Modal.hasOpenedInstance) {
+      this.checkScrollbar();
+      this.setScrollbar();
 
-    this.checkScrollbar();
-    this.setScrollbar();
+      $('body').addClass('modal-open');
+    } else {
+      this.bodyIsOverflowing = Modal.bodyIsOverflowing;
+    }
 
-    $('body').addClass('modal-open');
+    Modal.addOpenedInstance(this)
 
     this.resize();
 
@@ -510,6 +548,8 @@ export default Component.extend({
    * @private
    */
   hide() {
+    Modal.removeOpenedInstance(this)
+
     this.resize();
     this.set('in', false);
 
@@ -535,9 +575,12 @@ export default Component.extend({
 
     this.get('modalElement').hide();
     this.handleBackdrop(() => {
-      $('body').removeClass('modal-open');
+      if (!Modal.hasOpenedInstance) {
+        $('body').removeClass('modal-open');
+        this.resetScrollbar();
+      }
+
       this.resetAdjustments();
-      this.resetScrollbar();
       this.sendAction('closedAction');
     });
   },
@@ -695,9 +738,15 @@ export default Component.extend({
 
   willDestroyElement() {
     this._super(...arguments);
+
+    Modal.removeOpenedInstance(this)
+
     $(window).off('resize.bs.modal');
-    $('body').removeClass('modal-open');
-    this.resetScrollbar();
+
+      if (!Modal.hasOpenedInstance) {
+      $('body').removeClass('modal-open');
+      this.resetScrollbar();
+    }
   },
 
   _observeOpen: observer('open', function() {
