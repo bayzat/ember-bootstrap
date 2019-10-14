@@ -20,20 +20,25 @@ const Modal = EmberObject.extend({
       this.openedInstances.pushObject(instance);
     }
 
-    if (instance.backdrop) {
-      instance.backdropElement[0].style.zIndex = this.Z_INDEX_BASE
-      if (this.openedInstances.length > 1) {
-        instance.backdropElement[0].style.opacity = 0;
+    // make sure all elements are already rendered (this would be otherwise broken in tests)
+    schedule('afterRender', this, function() {
+      if (instance.backdrop) {
+        instance.backdropElement[0].style.zIndex = this.Z_INDEX_BASE
+        if (this.openedInstances.length > 1) {
+          instance.backdropElement[0].style.opacity = 0;
+        }
       }
-    }
-    instance.modalElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1) + this.Z_INDEX_STEP / 2)
-    this.openedInstances[0].backdropElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1))
+      instance.modalElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1) + this.Z_INDEX_STEP / 2)
+      if (this.openedInstances[0].backdrop) {
+        this.openedInstances[0].backdropElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1))
+      }
+    })
   },
   removeOpenedInstance(instance) {
     if (this.openedInstances.includes(instance)) {
       this.openedInstances.removeObject(instance);
 
-      if (this.openedInstances.length > 0) {
+      if (this.openedInstances.length > 0 && this.openedInstances[0].backdrop) {
         this.openedInstances[0].backdropElement[0].style.zIndex = this.Z_INDEX_BASE + (this.Z_INDEX_STEP * (this.openedInstances.length - 1))
       }
     }
